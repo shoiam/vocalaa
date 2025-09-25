@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Toaster } from "@/components/ui/sonner"
 import { toast } from "sonner"
+import Link from 'next/link'
 
 interface ProfileFormData {
   basic_info: {
