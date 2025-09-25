@@ -31,9 +31,13 @@ app = FastAPI(
 )
 
 # Add CORS middleware
+# Get allowed origins from environment variable
+allowed_origins = os.getenv("CORS_ORIGINS", "http://localhost:3000,http://localhost:3001,https://vocalaa.com").split(",")
+allowed_origins = [origin.strip() for origin in allowed_origins]  # Remove any whitespace
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://localhost:3001", "https://vocalaa.com"],  # Add your frontend URLs
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],  # Allow all methods including OPTIONS
     allow_headers=["*"],  # Allow all headers including Authorization
