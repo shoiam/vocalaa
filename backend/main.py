@@ -286,45 +286,51 @@ async def create_profile(profile_data: ProfileCreate, current_user: dict = Depen
         logger.error(f"Profile creation error: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.delete("/profile/delete")
-async def delete_profile(current_user: dict = Depends(get_current_user)):
-    """Delete the current user's profile"""
-    logger.info(f"Deleting profile for user: {current_user['email']}")
+@app.delete("/account/delete")
+async def delete_account(current_user: dict = Depends(get_current_user)):
+    """Delete the current user's account and all associated data"""
+    logger.info(f"Deleting account for user: {current_user['email']}")
 
     try:
-        # Check if profile exists
-        existing_response = supabase_client.table("profiles").select("*").eq("user_id", current_user["user_id"]).execute()
+        mcp_slug = None
 
-        if not existing_response.data:
-            raise HTTPException(status_code=404, detail="Profile not found")
+        # First, check if profile exists and get the mcp_slug
+        try:
+            existing_response = supabase_client.table("profiles").select("*").eq("user_id", current_user["user_id"]).execute()
+            if existing_response.data:
+                mcp_slug = existing_response.data[0]['mcp_slug']
 
-        existing_profile = existing_response.data[0]
-        mcp_slug = existing_profile['mcp_slug']
+                # Delete the profile first
+                profile_delete = supabase_client.table("profiles").delete().eq("user_id", current_user["user_id"]).execute()
+                if profile_delete.data:
+                    logger.info(f"Profile deleted for user: {current_user['email']}, MCP slug: {mcp_slug}")
 
-        # Delete the profile
-        response = supabase_client.table("profiles").delete().eq("user_id", current_user["user_id"]).execute()
+                    # Invalidate cache
+                    user_cache_key = generate_cache_key("profile", current_user["user_id"])
+                    mcp_cache_key = generate_cache_key("profile_slug", mcp_slug)
+                    cache_delete(user_cache_key)
+                    cache_delete(mcp_cache_key)
+        except Exception as e:
+            logger.warning(f"Profile deletion failed or no profile exists: {str(e)}")
 
-        if response.data:
-            logger.info(f"Profile deleted for user: {current_user['email']}, MCP slug: {mcp_slug}")
+        # Delete the user account from Supabase Auth
+        try:
+            auth_response = supabase_client.auth.admin.delete_user(current_user["user_id"])
+            logger.info(f"User account deleted: {current_user['email']}")
+        except Exception as e:
+            logger.error(f"Failed to delete user account: {str(e)}")
+            raise HTTPException(status_code=500, detail="Failed to delete user account")
 
-            # Invalidate cache for both user_id and mcp_slug lookups
-            user_cache_key = generate_cache_key("profile", current_user["user_id"])
-            mcp_cache_key = generate_cache_key("profile_slug", mcp_slug)
-            cache_delete(user_cache_key)
-            cache_delete(mcp_cache_key)
-            logger.info(f"Cache invalidated for deleted profile: {current_user['email']}")
-
-            return {
-                "message": "Profile deleted successfully",
-                "mcp_slug": mcp_slug
-            }
-        else:
-            raise HTTPException(status_code=400, detail="Failed to delete profile")
+        return {
+            "message": "Account and all associated data deleted successfully",
+            "email": current_user["email"],
+            "mcp_slug": mcp_slug
+        }
 
     except HTTPException:
         raise
     except Exception as e:
-        logger.error(f"Profile deletion error: {str(e)}")
+        logger.error(f"Account deletion error: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/mcp/{user_slug}")
