@@ -44,4 +44,5 @@ ui/next-env.d.ts
 
 backend/.env
 backend/.venv
+backend/logs/
 
