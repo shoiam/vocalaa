@@ -254,12 +254,18 @@ async def create_profile(profile_data: ProfileCreate, current_user: dict = Depen
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/mcp/{user_slug}")
-@app.get("/mcp/{user_slug}")
-@app.delete("/mcp/{user_slug}")
 @app.options("/mcp/{user_slug}")
 async def user_mcp_endpoint(user_slug: str, request: Request):
-    logger.info(f"MCP request for user: {user_slug}")
+    logger.info(f"MCP request for user: {user_slug}, method: {request.method}")
+
     try:
+        if request.method == "OPTIONS":
+            return JSONResponse(content={"status": "ok"})
+
+        # Only handle POST requests for MCP JSON-RPC
+        if request.method != "POST":
+            raise HTTPException(405, f"Method {request.method} not allowed for MCP endpoint")
+
         # Check cache first
         cache_key = generate_cache_key("profile_slug", user_slug)
         cached_profile = cache_get(cache_key)
@@ -278,20 +284,18 @@ async def user_mcp_endpoint(user_slug: str, request: Request):
             cache_set(cache_key, user_profile, ttl=1800)
             logger.info(f"Profile cached for slug: {user_slug}")
 
-        if request.method == "GET":
-            return await handle_mcp_sse_connection(user_slug, request)
-        elif request.method == "POST":
-            data = await request.json()
-            return await handle_mcp_request(data, user_profile)
-        elif request.method == "OPTIONS":
-            return JSONResponse(content={"status": "ok"})
-        elif request.method == "DELETE":
-            return JSONResponse(content={"status": "session terminated"})
+        # Handle MCP JSON-RPC request
+        data = await request.json()
+        logger.info(f"MCP JSON-RPC request: {data}")
+        result = await handle_mcp_request(data, user_profile)
+        logger.info(f"MCP JSON-RPC response: {result}")
+        return result
 
     except HTTPException:
         raise
     except Exception as e:
         logger.error(f"MCP endpoint error: {str(e)}")
+        logger.exception("Full exception traceback:")
         raise HTTPException(500, str(e))
     
 async def handle_mcp_request(request_data: dict, user_profile: dict) -> dict:
@@ -423,20 +427,7 @@ async def handle_tool_call(tool_name: str, user_profile: dict, request_id: int) 
             "error": {"code": -32603, "message": str(e)}
         }
     
-async def handle_mcp_sse_connection(user_slug: str, request: Request):
-    async def event_stream():
-        # Simple keepalive for SSE connection
-        yield f"data: {{'type': 'connected', 'user': '{user_slug}'}}\n\n"
-    
-    return StreamingResponse(
-        event_stream(),
-        media_type="text/event-stream",
-        headers={
-            "Cache-Control": "no-cache",
-            "Connection": "keep-alive",
-            "Access-Control-Allow-Origin": "*",
-        }
-    )
+# Removed handle_mcp_sse_connection - MCP uses JSON-RPC over POST, not SSE
 def main():
     """Run the Http server"""
     port = int(os.environ.get("PORT", 8000))
