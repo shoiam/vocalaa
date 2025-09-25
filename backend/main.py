@@ -178,7 +178,7 @@ async def get_my_profile(current_user: dict = Depends(get_current_user)):
         profile_data = {
             "profile_id": profile["id"],
             "mcp_slug": profile["mcp_slug"],
-            "mcp_url": f"https://vocalaa.com/mcp/{profile['mcp_slug']}",
+            "mcp_url": f"{os.getenv('MCP_BASE_URL', 'https://mcp.vocalaa.com')}/mcp/{profile['mcp_slug']}",
             "basic_info": profile["basic_info"],
             "work_experience": profile["work_experience"],
             "skills": profile["skills"],
@@ -236,7 +236,7 @@ async def update_profile(profile_data: ProfileCreate, current_user: dict = Depen
             return {
                 "message": "Profile updated successfully",
                 "mcp_slug": existing_profile["mcp_slug"],
-                "mcp_url": f"https://vocalaa.com/mcp/{existing_profile['mcp_slug']}",
+                "mcp_url": f"{os.getenv('MCP_BASE_URL', 'https://mcp.vocalaa.com')}/mcp/{existing_profile['mcp_slug']}",
                 "profile_id": response.data[0]["id"]
             }
         else:
@@ -277,13 +277,54 @@ async def create_profile(profile_data: ProfileCreate, current_user: dict = Depen
             return {
                 "message": "Profile created successfully",
                 "mcp_slug": mcp_slug,
-                "mcp_url": f"https://vocalaa.com/mcp/{mcp_slug}",
+                "mcp_url": f"{os.getenv('MCP_BASE_URL', 'https://mcp.vocalaa.com')}/mcp/{mcp_slug}",
                 "profile_id": response.data[0]["id"]
             }
         else:
             raise HTTPException(status_code=400, detail="Failed to create profile")
     except Exception as e:
         logger.error(f"Profile creation error: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.delete("/profile/delete")
+async def delete_profile(current_user: dict = Depends(get_current_user)):
+    """Delete the current user's profile"""
+    logger.info(f"Deleting profile for user: {current_user['email']}")
+
+    try:
+        # Check if profile exists
+        existing_response = supabase_client.table("profiles").select("*").eq("user_id", current_user["user_id"]).execute()
+
+        if not existing_response.data:
+            raise HTTPException(status_code=404, detail="Profile not found")
+
+        existing_profile = existing_response.data[0]
+        mcp_slug = existing_profile['mcp_slug']
+
+        # Delete the profile
+        response = supabase_client.table("profiles").delete().eq("user_id", current_user["user_id"]).execute()
+
+        if response.data:
+            logger.info(f"Profile deleted for user: {current_user['email']}, MCP slug: {mcp_slug}")
+
+            # Invalidate cache for both user_id and mcp_slug lookups
+            user_cache_key = generate_cache_key("profile", current_user["user_id"])
+            mcp_cache_key = generate_cache_key("profile_slug", mcp_slug)
+            cache_delete(user_cache_key)
+            cache_delete(mcp_cache_key)
+            logger.info(f"Cache invalidated for deleted profile: {current_user['email']}")
+
+            return {
+                "message": "Profile deleted successfully",
+                "mcp_slug": mcp_slug
+            }
+        else:
+            raise HTTPException(status_code=400, detail="Failed to delete profile")
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Profile deletion error: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/mcp/{user_slug}")

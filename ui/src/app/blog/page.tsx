@@ -18,7 +18,7 @@ export default function BlogPage() {
   "mcpServers": {
     "vocalaa-resume": {
       "command": "npx",
-      "args": ["mcp-remote", "https://vocalaa.com/mcp/your-slug"]
+      "args": ["mcp-remote", "https://mcp.vocalaa.com/mcp/your-slug"]
     }
   }
 }`
