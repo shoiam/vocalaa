@@ -224,17 +224,18 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 font-mono text-white">
-      <nav className="p-6 flex justify-between items-center border-b border-slate-700">
-        <h1 className="text-2xl font-bold">Vocalaa Dashboard</h1>
-        <div className="flex items-center space-x-4">
-          <span className="text-slate-400">Welcome, {user?.email}</span>
-          <Button onClick={handleSignOut} variant="ghost" className="text-white">
+      <nav className="p-4 sm:p-6 flex justify-between items-center border-b border-slate-700">
+        <h1 className="text-lg sm:text-2xl font-bold">Vocalaa Dashboard</h1>
+        <div className="flex items-center space-x-2 sm:space-x-4">
+          <span className="text-slate-400 text-xs sm:text-sm hidden sm:block">Welcome, {user?.email}</span>
+          <span className="text-slate-400 text-xs sm:hidden">Hi!</span>
+          <Button onClick={handleSignOut} variant="ghost" className="text-white text-sm px-2 sm:px-4">
             Sign Out
           </Button>
         </div>
       </nav>
 
-      <main className="container mx-auto px-6 py-12">
+      <main className="container mx-auto px-4 sm:px-6 py-8 sm:py-12">
         {profileResult ? (
           <SuccessPage
             result={profileResult}
@@ -243,11 +244,11 @@ export default function DashboardPage() {
           />
         ) : (
           <>
-            <div className="text-center space-y-6 mb-12">
-              <h2 className="text-4xl font-bold">
+            <div className="text-center space-y-4 sm:space-y-6 mb-8 sm:mb-12">
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold px-2">
                 {existingProfile ? 'Update Your Interactive Resume' : 'Create Your Interactive Resume'}
               </h2>
-              <p className="text-slate-300 text-lg max-w-2xl mx-auto">
+              <p className="text-slate-300 text-base sm:text-lg max-w-2xl mx-auto px-4">
                 {existingProfile
                   ? 'Update your profile information below. Changes will be reflected in your MCP URL.'
                   : 'Skip the formatting headaches of static resumes. Fill out the form below to transform your traditional resume into an AI-powered assistant that recruiters can interact with conversationally.'
@@ -256,7 +257,7 @@ export default function DashboardPage() {
             </div>
 
             {error && (
-              <div className="mb-6 p-4 bg-red-900/20 border border-red-800 rounded-lg text-red-400 text-center">
+              <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-red-900/20 border border-red-800 rounded-lg text-red-400 text-center text-sm sm:text-base mx-2">
                 {error}
               </div>
             )}
@@ -300,12 +301,12 @@ function SuccessPage({ result, existingProfile, onEditProfile }: { result: Profi
 
 
   return (
-    <div className="max-w-4xl mx-auto text-center space-y-8">
-      <div className="space-y-4">
-        <h2 className="text-4xl font-bold text-green-400">
+    <div className="max-w-4xl mx-auto text-center space-y-6 sm:space-y-8 px-2">
+      <div className="space-y-3 sm:space-y-4">
+        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-green-400 px-2">
           {existingProfile ? 'Your Interactive Resume' : 'Your Interactive Resume is Live!'}
         </h2>
-        <p className="text-xl text-slate-300">
+        <p className="text-base sm:text-lg lg:text-xl text-slate-300 px-2">
           {existingProfile
             ? 'Your resume is live and ready to share with recruiters.'
             : 'Your resume has been transformed into an AI assistant. Share your MCP URL with recruiters.'
@@ -314,7 +315,7 @@ function SuccessPage({ result, existingProfile, onEditProfile }: { result: Profi
         {existingProfile && onEditProfile && (
           <Button
             onClick={onEditProfile}
-            className="bg-blue-600 hover:bg-blue-700 mt-4"
+            className="bg-blue-600 hover:bg-blue-700 mt-4 w-full sm:w-auto"
           >
             Edit Profile
           </Button>
@@ -323,17 +324,17 @@ function SuccessPage({ result, existingProfile, onEditProfile }: { result: Profi
 
       <Card className="bg-slate-800/50 border-slate-700 text-left">
         <CardHeader>
-          <CardTitle className="text-white">Your MCP URL</CardTitle>
+          <CardTitle className="text-white text-lg sm:text-xl">Your MCP URL</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="flex items-center space-x-2">
-            <code className="flex-1 bg-slate-900 p-3 rounded text-green-400 font-mono">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-2">
+            <code className="flex-1 bg-slate-900 p-2 sm:p-3 rounded text-green-400 font-mono text-xs sm:text-sm break-all">
               {result.mcp_url}
             </code>
-            <Button 
+            <Button
               onClick={() => copyToClipboard(result.mcp_url)}
               size="sm"
-              className="bg-green-600 hover:bg-green-700"
+              className="bg-green-600 hover:bg-green-700 w-full sm:w-auto shrink-0"
             >
               {copied ? 'Copied!' : 'Copy'}
             </Button>
@@ -343,41 +344,41 @@ function SuccessPage({ result, existingProfile, onEditProfile }: { result: Profi
 
       <Card className="bg-slate-800/50 border-slate-700 text-left">
         <CardHeader>
-          <CardTitle className="text-white">For Recruiters: Connection Instructions</CardTitle>
+          <CardTitle className="text-white text-lg sm:text-xl">For Recruiters: Connection Instructions</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <p className="text-slate-300">
+          <p className="text-slate-300 text-sm sm:text-base">
             Share these instructions with recruiters to connect to your interactive resume:
           </p>
 
           <div className="bg-blue-900/20 border border-blue-700 p-3 rounded-lg">
-            <p className="text-blue-200 text-sm mb-2">
+            <p className="text-blue-200 text-xs sm:text-sm mb-2">
               📚 <strong>Need detailed instructions?</strong>
             </p>
-            <p className="text-blue-300 text-sm">
+            <p className="text-blue-300 text-xs sm:text-sm">
               Share our complete tutorial: <Link href="/blog" className="underline hover:text-blue-100">vocalaa.com/blog</Link>
             </p>
           </div>
-          
+
           <div className="space-y-2">
-            <p className="text-slate-400 text-sm">Add to Claude Desktop configuration:</p>
-            <pre className="bg-slate-900 p-4 rounded text-sm text-green-400 overflow-x-auto">
+            <p className="text-slate-400 text-xs sm:text-sm">Add to Claude Desktop configuration:</p>
+            <pre className="bg-slate-900 p-2 sm:p-4 rounded text-xs sm:text-sm text-green-400 overflow-x-auto">
 {connectionConfig}
             </pre>
           </div>
 
-          <Button 
+          <Button
             onClick={() => copyToClipboard(connectionConfig)}
-            className="w-full bg-green-600 hover:bg-green-700"
+            className="w-full bg-green-600 hover:bg-green-700 text-sm sm:text-base"
           >
             Copy Configuration
           </Button>
         </CardContent>
       </Card>
 
-      <div className="text-slate-400 text-sm space-y-2">
-        <p>Once connected, recruiters can ask questions like:</p>
-        <ul className="list-disc list-inside space-y-1 max-w-md mx-auto">
+      <div className="text-slate-400 text-xs sm:text-sm space-y-2 px-4">
+        <p className="text-center">Once connected, recruiters can ask questions like:</p>
+        <ul className="list-disc list-inside space-y-1 max-w-md mx-auto text-left">
           <li>&quot;What&apos;s their Python experience?&quot;</li>
           <li>&quot;Tell me about their leadership background&quot;</li>
           <li>&quot;What projects have they built?&quot;</li>

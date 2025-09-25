@@ -81,106 +81,106 @@ export function ProfileForm({ onSubmit, initialData, loading, isEditing = false,
   })
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 max-w-4xl mx-auto">
-      
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 sm:space-y-6 max-w-4xl mx-auto">
+
       {/* Basic Information */}
       <Card className="bg-slate-800/50 border-slate-700">
-        <CardHeader>
-          <CardTitle className="text-white">Basic Information</CardTitle>
+        <CardHeader className="pb-3 sm:pb-6">
+          <CardTitle className="text-white text-lg sm:text-xl">Basic Information</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="name" className="text-slate-300">Full Name</Label>
+        <CardContent className="space-y-3 sm:space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+            <div className="space-y-1.5 sm:space-y-2">
+              <Label htmlFor="name" className="text-slate-300 text-sm">Full Name</Label>
               <Input
                 {...register("basic_info.name", { required: "Name is required" })}
-                className="bg-slate-700 border-slate-600 text-white"
+                className="bg-slate-700 border-slate-600 text-white text-sm sm:text-base h-10 sm:h-11"
                 placeholder="John Doe"
               />
-              {errors.basic_info?.name && <p className="text-red-400 text-sm mt-1">{errors.basic_info.name.message}</p>}
+              {errors.basic_info?.name && <p className="text-red-400 text-xs sm:text-sm mt-1">{errors.basic_info.name.message}</p>}
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="title" className="text-slate-300">Professional Title</Label>
+            <div className="space-y-1.5 sm:space-y-2">
+              <Label htmlFor="title" className="text-slate-300 text-sm">Professional Title</Label>
               <Input
                 {...register("basic_info.title", { required: "Title is required" })}
-                className="bg-slate-700 border-slate-600 text-white"
+                className="bg-slate-700 border-slate-600 text-white text-sm sm:text-base h-10 sm:h-11"
                 placeholder="Software Engineer"
               />
-              {errors.basic_info?.title && <p className="text-red-400 text-sm mt-1">{errors.basic_info.title.message}</p>}
+              {errors.basic_info?.title && <p className="text-red-400 text-xs sm:text-sm mt-1">{errors.basic_info.title.message}</p>}
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="email" className="text-slate-300">Email</Label>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+            <div className="space-y-1.5 sm:space-y-2">
+              <Label htmlFor="email" className="text-slate-300 text-sm">Email</Label>
               <Input
                 {...register("basic_info.email", { required: "Email is required" })}
                 type="email"
-                className="bg-slate-700 border-slate-600 text-white"
+                className="bg-slate-700 border-slate-600 text-white text-sm sm:text-base h-10 sm:h-11"
                 placeholder="john@example.com"
               />
-              {errors.basic_info?.email && <p className="text-red-400 text-sm mt-1">{errors.basic_info.email.message}</p>}
+              {errors.basic_info?.email && <p className="text-red-400 text-xs sm:text-sm mt-1">{errors.basic_info.email.message}</p>}
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="location" className="text-slate-300">Location (Optional)</Label>
+            <div className="space-y-1.5 sm:space-y-2">
+              <Label htmlFor="location" className="text-slate-300 text-sm">Location (Optional)</Label>
               <Input
                 {...register("basic_info.location")}
-                className="bg-slate-700 border-slate-600 text-white"
+                className="bg-slate-700 border-slate-600 text-white text-sm sm:text-base h-10 sm:h-11"
                 placeholder="San Francisco, CA"
               />
             </div>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="summary" className="text-slate-300">Professional Summary</Label>
+          <div className="space-y-1.5 sm:space-y-2">
+            <Label htmlFor="summary" className="text-slate-300 text-sm">Professional Summary</Label>
             <Textarea
               {...register("basic_info.summary", { required: "Summary is required" })}
-              className="bg-slate-700 border-slate-600 text-white min-h-24"
+              className="bg-slate-700 border-slate-600 text-white min-h-20 sm:min-h-24 text-sm sm:text-base"
               placeholder="Brief description of your professional background and expertise..."
             />
-            {errors.basic_info?.summary && <p className="text-red-400 text-sm mt-1">{errors.basic_info.summary.message}</p>}
+            {errors.basic_info?.summary && <p className="text-red-400 text-xs sm:text-sm mt-1">{errors.basic_info.summary.message}</p>}
           </div>
         </CardContent>
       </Card>
 
       {/* Work Experience */}
       <Card className="bg-slate-800/50 border-slate-700">
-        <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle className="text-white">Work Experience</CardTitle>
+        <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 pb-3 sm:pb-6">
+          <CardTitle className="text-white text-lg sm:text-xl">Work Experience</CardTitle>
           <Button
             type="button"
             onClick={() => appendWork({ company: '', role: '', duration: '', description: '', achievements: [], technologies: [] })}
             size="sm"
-            className="bg-green-600 hover:bg-green-700"
+            className="bg-green-600 hover:bg-green-700 text-sm w-full sm:w-auto"
           >
             <Plus className="w-4 h-4 mr-2" />
             Add Job
           </Button>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-3 sm:space-y-4">
           {workFields.map((field, index) => (
-            <div key={field.id} className="border border-slate-600 rounded-lg p-4 bg-slate-900/30">
-              <div className="flex justify-between items-center mb-4">
-                <h4 className="text-slate-300 font-medium">Position {index + 1}</h4>
+            <div key={field.id} className="border border-slate-600 rounded-lg p-3 sm:p-4 bg-slate-900/30">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3 sm:mb-4 gap-2">
+                <h4 className="text-slate-300 font-medium text-sm sm:text-base">Position {index + 1}</h4>
                 {workFields.length > 1 && (
                   <Button
                     type="button"
                     onClick={() => removeWork(index)}
                     size="sm"
                     variant="outline"
-                    className="text-red-400 border-red-400 hover:bg-red-400 hover:text-white"
+                    className="text-red-400 border-red-400 hover:bg-red-400 hover:text-white text-xs w-full sm:w-auto"
                   >
-                    <Trash2 className="w-4 h-4 mr-1" />
+                    <Trash2 className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
                     Remove
                   </Button>
                 )}
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                <div className="space-y-2">
-                  <Label className="text-slate-300">Company</Label>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 mb-3 sm:mb-4">
+                <div className="space-y-1.5 sm:space-y-2">
+                  <Label className="text-slate-300 text-sm">Company</Label>
                   <Input
                     {...register(`work_experience.${index}.company` as const, { required: "Company is required" })}
                     className="bg-slate-700 border-slate-600 text-white"
@@ -458,15 +458,14 @@ export function ProfileForm({ onSubmit, initialData, loading, isEditing = false,
       </Card>
 
       {/* Submit Buttons */}
-      <div className="flex justify-center gap-4 pt-4">
+      <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4 pt-4 px-2">
         {isEditing && onCancel && (
           <Button
             type="button"
             onClick={onCancel}
             disabled={loading}
-            size="lg"
             variant="outline"
-            className="border-red-500 text-red-400 hover:bg-red-500 hover:text-white bg-transparent px-12 py-3 text-lg font-semibold"
+            className="border-red-500 text-red-400 hover:bg-red-500 hover:text-white bg-transparent px-6 sm:px-12 py-2.5 sm:py-3 text-base sm:text-lg font-semibold w-full sm:w-auto order-2 sm:order-1"
           >
             Cancel
           </Button>
@@ -474,16 +473,19 @@ export function ProfileForm({ onSubmit, initialData, loading, isEditing = false,
         <Button
           type="submit"
           disabled={loading}
-          size="lg"
-          className="bg-green-600 hover:bg-green-700 disabled:opacity-50 px-12 py-3 text-lg font-semibold"
+          className="bg-green-600 hover:bg-green-700 disabled:opacity-50 px-6 sm:px-12 py-2.5 sm:py-3 text-base sm:text-lg font-semibold w-full sm:w-auto order-1 sm:order-2"
         >
           {loading ? (
             <>
-              <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-              {isEditing ? 'Updating Your Profile...' : 'Creating Your Interactive Resume...'}
+              <div className="animate-spin rounded-full h-4 w-4 sm:h-5 sm:w-5 border-b-2 border-white mr-2"></div>
+              <span className="text-sm sm:text-base">
+                {isEditing ? 'Updating Your Profile...' : 'Creating Your Interactive Resume...'}
+              </span>
             </>
           ) : (
-            isEditing ? 'Update Profile' : 'Generate My MCP URL'
+            <span className="text-sm sm:text-base">
+              {isEditing ? 'Update Profile' : 'Generate My MCP URL'}
+            </span>
           )}
         </Button>
       </div>
