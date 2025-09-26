@@ -63,6 +63,7 @@ export default function LoginPage() {
           body: JSON.stringify({
             email,
             password,
+            preferred_name: preferredName,
           }),
         })
 
