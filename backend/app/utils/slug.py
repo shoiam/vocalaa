@@ -1,7 +1,7 @@
 import secrets
 import string
 import re
-from database import get_supabase_client, return_supabase_client
+from app.core.database import get_supabase_client, return_supabase_client
 
 async def generate_unique_mcp_slug(preferred_name: str) ->  str:
     clean_name = re.sub(r'[^a-zA-Z0-9]', '', preferred_name.lower())

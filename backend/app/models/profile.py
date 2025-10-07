@@ -2,20 +2,6 @@ from pydantic import BaseModel, EmailStr
 from typing import Optional, List
 from datetime import datetime
 
-class UserRegister(BaseModel):
-    email: str
-    password: str
-    preferred_name: str
-
-class UserLogin(BaseModel):
-    email: str
-    password: str
-
-class UserResponse(BaseModel):
-    id: str
-    email: str
-    mcp_slug: str
-
 class BasicInfo(BaseModel):
     name: str
     title: str

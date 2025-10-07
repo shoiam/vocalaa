@@ -1,8 +1,8 @@
 import pytest
 import asyncio
 from fastapi.testclient import TestClient
-from main import app
-from database import get_supabase_client
+from app import app
+from app.core.database import get_supabase_client
 
 @pytest.fixture(scope="session")
 def event_loop():

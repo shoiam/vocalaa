@@ -1,5 +1,5 @@
 import pytest
-from database import get_supabase_client
+from app.core.database import get_supabase_client
 
 class TestDatabase:
     
