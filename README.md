@@ -63,4 +63,4 @@ vocalaa/
 
 ## License
 
-[Your License Here]
+Apache License, Version 2.0
