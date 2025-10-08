@@ -1,12 +1,16 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import Link from "next/link"
+import Image from "next/image"
 
 export default function HomePage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white font-mono">
       <nav className="p-4 sm:p-6 flex justify-between items-center">
-        <h1 className="text-xl sm:text-2xl font-bold">Vocalaa</h1>
+        <div className="flex items-center gap-0.5">
+          <Image src="/VocalaaLogoB.png" alt="Vocalaa Logo" width={80} height={80} className="rounded" />
+          <h1 className="text-xl sm:text-3xl font-bold">Vocalaa</h1>
+        </div>
         <div className="flex items-center space-x-2 sm:space-x-4">
           <Link href="/blog" className="hidden sm:block text-slate-300 hover:text-white transition-colors text-sm">
             How It Works
