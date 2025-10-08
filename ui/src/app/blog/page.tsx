@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
@@ -27,7 +28,8 @@ export default function BlogPage() {
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 font-mono text-white">
       <nav className="p-6 border-b border-slate-700">
         <div className="container mx-auto flex justify-between items-center">
-          <Link href="/" className="text-2xl font-bold text-white hover:text-green-400 transition-colors">
+          <Link href="/" className="flex items-center gap-0.5 text-2xl font-bold text-white hover:text-green-400 transition-colors">
+            <Image src="/VocalaaLogoB.png" alt="Vocalaa Logo" width={60} height={60} className="rounded" />
             Vocalaa
           </Link>
           <div className="flex items-center space-x-4">
