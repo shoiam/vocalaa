@@ -299,9 +299,9 @@ export function ProfileForm({ onSubmit, initialData, loading, isEditing = false,
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div className="space-y-2">
-                  <Label className="text-slate-300">Project Name</Label>
+                  <Label className="text-slate-300">Project Name (Optional)</Label>
                   <Input
-                    {...register(`projects.${index}.name` as const, { required: "Project name is required" })}
+                    {...register(`projects.${index}.name` as const)}
                     className="bg-slate-700 border-slate-600 text-white"
                     placeholder="Project Name"
                   />
@@ -320,9 +320,9 @@ export function ProfileForm({ onSubmit, initialData, loading, isEditing = false,
               </div>
 
               <div className="mb-4 space-y-2">
-                <Label className="text-slate-300">Description</Label>
+                <Label className="text-slate-300">Description (Optional)</Label>
                 <Textarea
-                  {...register(`projects.${index}.description` as const, { required: "Description is required" })}
+                  {...register(`projects.${index}.description` as const)}
                   className="bg-slate-700 border-slate-600 text-white min-h-20"
                   placeholder="Describe what this project does and your role in it..."
                 />

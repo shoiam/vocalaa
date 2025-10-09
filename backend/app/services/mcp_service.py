@@ -27,13 +27,23 @@ async def handle_mcp_request(request_data: dict, user_profile: dict) -> dict:
                 "inputSchema": {"type": "object", "properties": {}, "additionalProperties": False}
             },
             {
-                "name": "get_work_experience", 
+                "name": "get_work_experience",
                 "description": "Get professional work history and achievements",
                 "inputSchema": {"type": "object", "properties": {}, "additionalProperties": False}
             },
             {
                 "name": "get_skills",
                 "description": "Get technical and soft skills",
+                "inputSchema": {"type": "object", "properties": {}, "additionalProperties": False}
+            },
+            {
+                "name": "get_projects",
+                "description": "Get portfolio projects and demonstrations",
+                "inputSchema": {"type": "object", "properties": {}, "additionalProperties": False}
+            },
+            {
+                "name": "get_education",
+                "description": "Get educational background and qualifications",
                 "inputSchema": {"type": "object", "properties": {}, "additionalProperties": False}
             }
         ]
@@ -101,6 +111,45 @@ async def handle_tool_call(tool_name: str, user_profile: dict, request_id: int) 
                         response_text += f"**{category_name}:**\n"
                         if isinstance(skill_list, list):
                             response_text += f"{', '.join(skill_list)}\n\n"
+
+        elif tool_name == "get_projects":
+            projects = user_profile.get("projects", [])
+            if not projects:
+                response_text = "No projects data available."
+            else:
+                response_text = "**Portfolio Projects:**\n\n"
+                for project in projects:
+                    response_text += f"**{project.get('name', 'Untitled Project')}**\n"
+                    response_text += f"{project.get('description', 'No description provided.')}\n\n"
+
+                    if project.get('technologies'):
+                        response_text += "**Technologies:**\n"
+                        if isinstance(project['technologies'], list):
+                            response_text += f"{', '.join(project['technologies'])}\n"
+                        response_text += "\n"
+
+                    if project.get('github_url'):
+                        response_text += f"🔗 GitHub: {project['github_url']}\n"
+
+                    if project.get('demo_url'):
+                        response_text += f"🌐 Demo: {project['demo_url']}\n"
+
+                    response_text += "\n---\n\n"
+
+        elif tool_name == "get_education":
+            education = user_profile.get("education", [])
+            if not education:
+                response_text = "No education data available."
+            else:
+                response_text = "**Education Background:**\n\n"
+                for edu in education:
+                    response_text += f"**{edu.get('degree', 'Degree not specified')}** in **{edu.get('field', 'Field not specified')}**\n"
+                    response_text += f"🎓 {edu.get('institution', 'Institution not specified')}\n"
+
+                    if edu.get('graduation_year'):
+                        response_text += f"📅 Graduated: {edu['graduation_year']}\n"
+
+                    response_text += "\n---\n\n"
 
         else:
             return {
