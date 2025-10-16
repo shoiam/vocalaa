@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import get_allowed_origins
 from app.core.logging import setup_logging
-from app.api.routes import auth, profile, account, mcp
+from app.api.routes import auth, profile, account, mcp, metrics
 
 setup_logging()
 
@@ -34,6 +34,7 @@ def create_app() -> FastAPI:
     app.include_router(profile.router)
     app.include_router(account.router)
     app.include_router(mcp.router)
+    app.include_router(metrics.router)
 
     return app
 

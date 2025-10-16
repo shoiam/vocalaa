@@ -1,6 +1,10 @@
+import time
+from app.core.observability import track_performance, record_tool_call
+
+
 async def handle_mcp_request(request_data: dict, user_profile: dict) -> dict:
     """Handle MCP JSON-RPC requests with user profile data"""
-    
+
     method = request_data.get("method")
     request_id = request_data.get("id")
     
@@ -66,7 +70,12 @@ async def handle_mcp_request(request_data: dict, user_profile: dict) -> dict:
         }
 async def handle_tool_call(tool_name: str, user_profile: dict, request_id: int) -> dict:
     """Execute MCP tool calls with user profile data"""
-    
+
+    start_time = time.time()
+    success = True
+    error_message = None
+    user_slug = user_profile.get('mcp_slug', 'unknown')
+
     try:
         if tool_name == "get_basic_info":
             basic_info = user_profile.get("basic_info", {})
@@ -152,11 +161,35 @@ async def handle_tool_call(tool_name: str, user_profile: dict, request_id: int) 
                     response_text += "\n---\n\n"
 
         else:
+            success = False
+            error_message = f"Unknown tool: {tool_name}"
+            duration_ms = (time.time() - start_time) * 1000
+
+            # Record metrics even for unknown tools
+            record_tool_call(
+                tool_name=tool_name,
+                user_slug=user_slug,
+                duration_ms=duration_ms,
+                success=False,
+                error_message=error_message,
+                request_id=request_id
+            )
+
             return {
                 "jsonrpc": "2.0",
                 "id": request_id,
-                "error": {"code": -32601, "message": f"Unknown tool: {tool_name}"}
+                "error": {"code": -32601, "message": error_message}
             }
+
+        # Calculate duration and record successful tool call
+        duration_ms = (time.time() - start_time) * 1000
+        record_tool_call(
+            tool_name=tool_name,
+            user_slug=user_slug,
+            duration_ms=duration_ms,
+            success=True,
+            request_id=request_id
+        )
 
         return {
             "jsonrpc": "2.0",
@@ -168,10 +201,24 @@ async def handle_tool_call(tool_name: str, user_profile: dict, request_id: int) 
                 }]
             }
         }
-        
+
     except Exception as e:
+        success = False
+        error_message = str(e)
+        duration_ms = (time.time() - start_time) * 1000
+
+        # Record failed tool call
+        record_tool_call(
+            tool_name=tool_name,
+            user_slug=user_slug,
+            duration_ms=duration_ms,
+            success=False,
+            error_message=error_message,
+            request_id=request_id
+        )
+
         return {
             "jsonrpc": "2.0",
             "id": request_id,
-            "error": {"code": -32603, "message": str(e)}
+            "error": {"code": -32603, "message": error_message}
         }

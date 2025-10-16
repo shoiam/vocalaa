@@ -42,3 +42,38 @@ def setup_logging():
         compression="zip",
         filter=lambda record: "MCP" in record["message"] or record["name"] == "mcp"
     )
+
+    # File logging - Observability & Metrics logs
+    logger.add(
+        "logs/metrics.log",
+        format="{time:YYYY-MM-DD HH:mm:ss} | {level} | {extra} | {message}",
+        level="INFO",
+        rotation="10 MB",
+        retention="30 days",
+        compression="zip",
+        filter=lambda record: "MCP_TOOL_CALL" in record["message"] or "MCP_PERFORMANCE" in record["message"]
+    )
+
+    # File logging - Performance metrics only (JSON format for easier parsing)
+    logger.add(
+        "logs/performance.jsonl",
+        format="{time:YYYY-MM-DD HH:mm:ss} | {level} | {extra}",
+        level="INFO",
+        rotation="5 MB",
+        retention="14 days",
+        compression="zip",
+        filter=lambda record: "MCP_PERFORMANCE" in record["message"],
+        serialize=True  # Output as JSON lines
+    )
+
+    # File logging - Tool usage analytics (JSON format)
+    logger.add(
+        "logs/tool_usage.jsonl",
+        format="{time:YYYY-MM-DD HH:mm:ss} | {level} | {extra}",
+        level="INFO",
+        rotation="5 MB",
+        retention="30 days",
+        compression="zip",
+        filter=lambda record: "MCP_TOOL_CALL" in record["message"],
+        serialize=True  # Output as JSON lines for analytics
+    )

@@ -51,8 +51,7 @@ async def auth(user_data: UserRegister):
     """User Registration"""
     logger.info(f"Registration attempt for email: {user_data.email}")
     logger.debug(f"User data received: {user_data}")
-    # url: str = os.getenv("SUPABASE_URL")
-    # key: str = os.getenv("SUPABASE_KEY")
+
     try:
         logger.info("Calling Supabase auth.sign_up...")
         response = supabase_client.auth.sign_up({

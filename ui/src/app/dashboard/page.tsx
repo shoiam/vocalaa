@@ -14,6 +14,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Toaster } from "@/components/ui/sonner"
 import { toast } from "sonner"
 import Link from 'next/link'
+import { MCPAnalytics } from '@/components/MCPAnalytics'
 
 interface ProfileFormData {
   basic_info: {
@@ -383,6 +384,11 @@ function SuccessPage({ result, existingProfile, onEditProfile }: { result: Profi
           <li>&quot;Tell me about their leadership background&quot;</li>
           <li>&quot;What projects have they built?&quot;</li>
         </ul>
+      </div>
+
+      {/* MCP Analytics Section */}
+      <div className="mt-8">
+        <MCPAnalytics mcpSlug={result.mcp_slug} />
       </div>
     </div>
   )
